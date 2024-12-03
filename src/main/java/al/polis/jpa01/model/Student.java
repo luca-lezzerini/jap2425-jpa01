@@ -17,4 +17,7 @@ public class Student implements Serializable {
     private String lastName;
     @Column(length = 32)
     private String serialNumber;
+
+    @ManyToOne
+    Course course;
 }

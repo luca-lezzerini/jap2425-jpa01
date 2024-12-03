@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -19,4 +21,7 @@ public class Course implements Serializable {
     private String location;
     @Column(length = 6)
     private String code;
+
+    @OneToMany(mappedBy = "course",fetch = FetchType.EAGER)
+    private List<Student> students = new ArrayList<>();
 }

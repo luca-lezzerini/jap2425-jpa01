@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
 import java.util.Optional;
 
 @RunWith(SpringRunner.class)
@@ -58,6 +59,7 @@ class Jpa01ApplicationTests {
 		StudentInsertReqDto studentInsertReqDto = new StudentInsertReqDto();
 		studentInsertReqDto.setFirstName("John");
 		studentInsertReqDto.setLastName("Doe");
+		studentInsertReqDto.setSerialNumber("123456789");
 		var sx = studentService.insert(studentInsertReqDto);
 		Assertions.assertNotNull(sx);
 		Assertions.assertNotNull(sx.getId());
@@ -66,6 +68,27 @@ class Jpa01ApplicationTests {
 		Assertions.assertTrue(student.isPresent());
 		Assertions.assertEquals(sx.getFirstName(), student.get().getFirstName());
 		Assertions.assertEquals(sx.getLastName(), student.get().getLastName());
+		Assertions.assertEquals(sx.getSerialNumber(), student.get().getSerialNumber());
+	}
+
+	@Test
+	@Order(3)
+	public void addStudentToCourse(){
+		// get the list of all courses and students
+		List<Student> studs = studentRepository.findAll();
+		var courses = courseRepository.findAll();
+
+		// associate the last ones
+		var lastStud = studs.get(studs.size() - 1);
+		var lastStud2 = studs.get(studs.size() - 2);
+		var lastCourse = courses.get(courses.size() - 1);
+
+		// associate the student to the course
+		courseService.associate(lastCourse, lastStud);
+		courseService.associate(lastCourse, lastStud2);
+
+		System.out.println(lastCourse.getStudents().size());
+
 	}
 
 }

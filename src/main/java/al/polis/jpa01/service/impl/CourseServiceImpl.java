@@ -2,7 +2,9 @@ package al.polis.jpa01.service.impl;
 
 import al.polis.jpa01.dto.*;
 import al.polis.jpa01.model.Course;
+import al.polis.jpa01.model.Student;
 import al.polis.jpa01.repository.CourseRepository;
+import al.polis.jpa01.repository.StudentRepository;
 import al.polis.jpa01.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Service;
 public class CourseServiceImpl implements CourseService {
     @Autowired
     private CourseRepository courseRepository;
+    @Autowired
+    private StudentRepository studentRepository;
 
     @Override
     public CourseInsertResDto insert(CourseInsertReqDto courseDto) {
@@ -66,5 +70,16 @@ public class CourseServiceImpl implements CourseService {
             return;
         }
         courseRepository.deleteById(idDto.getId());
+    }
+
+    @Override
+    public Course associate(Course course, Student student) {
+        var list = course.getStudents();
+        list.add(student);
+        courseRepository.save(course);
+        student.setCourse(course);
+        studentRepository.save(student);
+
+        return course;
     }
 }
